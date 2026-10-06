@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PA Lecture 3: Product Metrics — II — Pre-Read</title>
+<style>
+  :root{
+    --page:#F8FAFC; --card:#FFFFFF; --section:#F1F5F9;
+    --primary:#6366F1; --hover:#4338CA; --wash:#EEF2FF;
+    --blue:#0EA5E9; --growth:#10B981; --caution:#F59E0B; --alert:#EF4444; --secondary:#8B5CF6;
+    --h:#0F172A; --body:#1E293B; --muted:#64748B; --faint:#94A3B8;
+    --border:#E2E8F0; --border-strong:#CBD5E1;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--page); color:var(--body); line-height:1.6; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px 80px}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--primary),var(--hover)); color:#fff;
+    border-radius:0 0 28px 28px; padding:48px 28px 40px; margin-bottom:32px;
+    box-shadow:0 12px 30px -12px rgba(99,102,241,.5)}
+  .hero-inner{max-width:860px; margin:0 auto}
+  .kicker{display:inline-block; font-size:12px; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; background:rgba(255,255,255,.18); padding:6px 12px; border-radius:999px; margin-bottom:16px}
+  .hero h1{margin:0 0 8px; font-size:clamp(26px,5vw,38px); font-weight:800; line-height:1.15}
+  .hero .sub{margin:0; font-size:clamp(15px,2.6vw,18px); opacity:.92; font-weight:400; max-width:640px}
+  .hero .meta{margin-top:20px; display:flex; flex-wrap:wrap; gap:10px}
+  .chip{font-size:12px; font-weight:600; background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25); padding:6px 12px; border-radius:8px}
+
+  section{margin:0 0 36px}
+  .sec-label{display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--primary); margin:0 0 6px}
+  .sec-label::before{content:""; width:26px; height:3px; background:var(--primary); border-radius:2px}
+  h2.sec-title{margin:0 0 18px; font-size:clamp(20px,3.6vw,26px); font-weight:800; color:var(--h)}
+  .sec-intro{color:var(--muted); font-style:italic; margin:-8px 0 20px; font-size:15px}
+
+  /* CASE FILE */
+  .case{background:var(--card); border:1px solid var(--border); border-radius:20px;
+    overflow:hidden; box-shadow:0 8px 24px -14px rgba(15,23,42,.25)}
+  .case-top{background:#0F172A; color:#fff; padding:20px 24px; display:flex; align-items:center; gap:14px}
+  .case-badge{font-size:26px; line-height:1}
+  .case-top .cf{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#94A3B8; font-weight:700}
+  .case-top .ct{font-size:19px; font-weight:800; letter-spacing:.02em}
+  .case-top .dom{margin-left:auto; font-size:11px; font-weight:700; color:#c7d2fe;
+    background:rgba(99,102,241,.25); border:1px solid rgba(99,102,241,.5); padding:5px 10px; border-radius:8px}
+  .case-body{padding:24px}
+  .block-h{font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:0 0 8px}
+  .block-h.red{color:var(--alert)} .block-h.grn{color:var(--growth)}
+  .setup-p{margin:0 0 22px; font-size:15.5px; color:var(--body)}
+  .ev{list-style:none; padding:0; margin:0 0 22px}
+  .ev li{position:relative; padding:6px 0 6px 26px; font-size:14.5px; color:var(--body)}
+  .ev li::before{content:""; position:absolute; left:4px; top:14px; width:8px; height:8px;
+    background:var(--blue); border-radius:2px; transform:rotate(45deg)}
+  .mystery{background:var(--wash); border-left:4px solid var(--primary); border-radius:0 12px 12px 0;
+    padding:16px 18px; margin:0 0 22px; font-size:16px; font-weight:600; color:var(--hover); font-style:italic}
+  .moves{display:grid; gap:10px; margin-bottom:8px}
+  .move-hint{font-size:13px; color:var(--muted); font-style:italic; margin:0 0 12px}
+  .move{display:flex; align-items:flex-start; gap:12px; text-align:left; width:100%;
+    background:var(--card); border:1.5px solid var(--border); border-radius:12px; padding:14px 16px;
+    font:inherit; color:var(--body); cursor:pointer; transition:all .18s}
+  .move:hover{border-color:var(--primary); background:var(--wash); transform:translateY(-1px)}
+  .move-box{flex:none; width:20px; height:20px; border:2px solid var(--border-strong);
+    border-radius:6px; margin-top:1px; transition:all .18s; position:relative}
+  .move.chosen .move-box{background:var(--primary); border-color:var(--primary)}
+  .move.chosen .move-box::after{content:"\2713"; position:absolute; inset:0; color:#fff;
+    font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center}
+  .move-label{font-size:14.5px; font-weight:500}
+  .move.chosen{border-color:var(--primary); background:var(--wash)}
+  .move.dim{opacity:.5}
+  .reveal{margin-top:14px; background:var(--section); border:1px dashed var(--border-strong);
+    border-radius:12px; padding:0 16px; max-height:0; overflow:hidden; transition:all .3s; opacity:0}
+  .reveal.show{max-height:240px; opacity:1; padding:14px 16px; margin-top:14px}
+  .reveal .rl{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--secondary); margin:0 0 6px}
+  .reveal p{margin:0; font-size:14px; color:var(--body)}
+
+  /* LOCKED CLUE */
+  .clue{margin-top:20px; border-radius:14px; overflow:hidden; border:1px solid var(--border)}
+  .clue-btn{width:100%; display:flex; align-items:center; gap:12px; background:var(--section);
+    border:none; padding:16px 18px; font:inherit; cursor:pointer; color:var(--muted); font-weight:700;
+    font-size:13px; letter-spacing:.06em; text-transform:uppercase; transition:background .18s}
+  .clue-btn:hover{background:#e6ebf2}
+  .clue-btn .lock{font-size:16px}
+  .clue-btn .hintr{margin-left:auto; font-size:11px; font-weight:600; text-transform:none; letter-spacing:0; color:var(--faint)}
+  .clue-body{max-height:0; overflow:hidden; transition:max-height .35s; background:var(--wash)}
+  .clue-body.open{max-height:320px}
+  .clue-body-inner{padding:18px 20px}
+  .clue-body-inner p{margin:0 0 10px; font-size:14.5px; color:var(--hover); font-style:italic}
+  .clue-body-inner p:last-child{margin:0}
+  .mission{display:block; margin-top:12px; font-weight:700; font-style:normal; color:var(--hover)}
+
+  /* TOPICS */
+  .topics{display:grid; gap:10px}
+  .topic{text-align:left; width:100%; background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:0; font:inherit; cursor:pointer; overflow:hidden; transition:border-color .18s}
+  .topic:hover{border-color:var(--border-strong)}
+  .topic[aria-expanded="true"]{border-color:var(--primary)}
+  .topic-head{display:flex; align-items:center; gap:14px; padding:16px 18px}
+  .topic-num{flex:none; font-size:13px; font-weight:800; color:var(--primary); background:var(--wash);
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center}
+  .topic-name{font-size:15.5px; font-weight:700; color:var(--h); flex:1}
+  .chev{flex:none; font-size:22px; color:var(--primary); font-weight:400; transition:transform .22s; line-height:1}
+  .topic[aria-expanded="true"] .chev{transform:rotate(45deg)}
+  .topic-body{max-height:0; overflow:hidden; transition:max-height .28s}
+  .topic[aria-expanded="true"] .topic-body{max-height:260px}
+  .topic-body p{margin:0; padding:0 18px 18px 66px; font-size:14.5px; color:var(--body)}
+
+  /* USE CASES */
+  .uses{display:grid; gap:12px}
+  .uc{display:flex; gap:14px; background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:16px 18px}
+  .uc-dot{flex:none; width:10px; height:10px; border-radius:50%; background:var(--growth); margin-top:7px}
+  .uc strong{display:block; color:var(--h); font-size:14.5px; margin-bottom:3px}
+  .uc span{font-size:14px; color:var(--body)}
+
+  /* PREREQ */
+  .prereqs{display:grid; gap:0; background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden}
+  .pq{display:grid; grid-template-columns:200px 1fr; gap:0; border-bottom:1px solid var(--border)}
+  .pq:last-child{border-bottom:none}
+  .pq-t{padding:16px 18px; font-weight:700; font-size:14px; color:var(--h); background:var(--section)}
+  .pq-r{padding:16px 18px; font-size:14px; color:var(--body)}
+  @media(max-width:640px){.pq{grid-template-columns:1fr} .pq-t{border-bottom:1px solid var(--border)}}
+
+  /* SETUP */
+  .setup-card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:8px 20px 20px}
+  .setup-item{display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); cursor:pointer}
+  .setup-item:last-child{border-bottom:none}
+  .setup-item input{position:absolute; opacity:0; width:0; height:0}
+  .chk{flex:none; width:24px; height:24px; border:2px solid var(--border-strong); border-radius:7px;
+    margin-top:1px; transition:all .18s; position:relative}
+  .setup-item input:checked + .chk{background:var(--growth); border-color:var(--growth)}
+  .setup-item input:checked + .chk::after{content:"\2713"; position:absolute; inset:0; color:#fff;
+    font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center}
+  .setup-text{font-size:14.5px; color:var(--body); transition:all .18s}
+  .setup-item input:checked ~ .setup-text{color:var(--faint); text-decoration:line-through}
+  .progress{margin:16px 0 4px; height:8px; background:var(--section); border-radius:99px; overflow:hidden}
+  .progress-bar{height:100%; width:0; background:linear-gradient(90deg,var(--growth),#34d399); border-radius:99px; transition:width .3s}
+  .progress-txt{font-size:13px; color:var(--muted); font-weight:600; text-align:right; margin-top:6px}
+
+  footer{text-align:center; color:var(--faint); font-size:12.5px; margin-top:48px; padding-top:24px; border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-inner">
+      <span class="kicker">Product Analytics · Pre-Read</span>
+      <h1>Lecture 3: Product Metrics — II</h1>
+      <p class="sub">The framework from last class, run on two real interview cases end to end.</p>
+      <div class="meta">
+        <span class="chip">🎯 4 sections · 1 case file</span>
+        <span class="chip">⏱ ~10 min before class</span>
+        <span class="chip">✅ Prereq: Product Metrics — I</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <p class="sec-label">Section 1</p>
+      <h2 class="sec-title">What's Happening in This Lecture</h2>
+      <p class="sec-intro">Here's a sneak peek at everything we cover today, and why each one is worth showing up for.</p>
+
+      <div class="case">
+        <div class="case-top">
+          <span class="case-badge">🕵️</span>
+          <div>
+            <div class="cf">The Analyst Files · Case #03</div>
+            <div class="ct">THE FITNESS-APP FUNNEL</div>
+          </div>
+          <span class="dom">Fitness / Interview</span>
+        </div>
+        <div class="case-body">
+          <p class="block-h">Setup</p>
+          <p class="setup-p">You're across the table in a product-analytics interview. The warm-up's done. The interviewer leans in: “A fitness app called PureFit wants to improve retention. What metric would you look at?” You have the framework. Now run it — live, out loud, under pressure.</p>
+
+          <p class="block-h">Evidence</p>
+          <ul class="ev"><li>PureFit has free and paid tiers. “Retained” means still active after two months.</li><li>The user funnel: acquisition → onboarding → engagement → retention.</li><li>Last month the app added new users, but day-60 active users aren't growing proportionally.</li></ul>
+
+          <p class="block-h red">The Mystery</p>
+          <p class="mystery">Before the interviewer's second question lands — what's the first metric you'd define, and at which funnel stage?</p>
+
+          <p class="block-h grn">Make Your Move</p>
+          <p class="move-hint">Choose your first move before continuing. There's no need to know the answer yet — tap an option to see why it's worth considering.</p>
+          <div class="moves">
+        <button class="move" data-reveal="Revenue matters, but is it the leading or lagging signal for retention? The funnel tells you where to look first.">
+          <span class="move-box" aria-hidden="true"></span>
+          <span class="move-label">A. Start with revenue — paid conversions show if the product works.</span>
+        </button>
+        <button class="move" data-reveal="A strong choice — activation is where many retention problems are actually born. The lecture shows why.">
+          <span class="move-box" aria-hidden="true"></span>
+          <span class="move-label">B. Start at onboarding — do new users complete a first meaningful action?</span>
+        </button>
+        <button class="move" data-reveal="You can measure the outcome, but it won't tell you where users leak. Walking the funnel finds the leak.">
+          <span class="move-box" aria-hidden="true"></span>
+          <span class="move-label">C. Start at retention directly — day-30 and day-60 return rates.</span>
+        </button>
+        <button class="move" data-reveal="Channel quality shapes everything downstream — a defensible starting point. Today reveals why the funnel order matters.">
+          <span class="move-box" aria-hidden="true"></span>
+          <span class="move-label">D. Start at acquisition — understand where users come from first.</span>
+        </button></div>
+          <div class="reveal" id="reveal">
+            <p class="rl">Why this move</p>
+            <p id="reveal-text"></p>
+          </div>
+
+          <div class="clue">
+            <button class="clue-btn" id="clue-btn">
+              <span class="lock">🔒</span><span>Clue Locked</span>
+              <span class="hintr">tap to unlock →</span>
+            </button>
+            <div class="clue-body" id="clue-body">
+              <div class="clue-body-inner">
+                <p>There's no universally “right” stage to start — but there is a structured reason to start somewhere.</p><p>You'll watch this answer built end to end, twice: PureFit, then a bank app. The funnel — not instinct — is always the starting point.</p>
+                <span class="mission">🎯 Your mission: come to class with a first move in mind.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-label" style="margin-top:8px">Topic Preview</p>
+      <h2 class="sec-title">What You'll Learn</h2>
+      <p class="sec-intro">Tap any topic to see what it covers and why it matters.</p>
+      <div class="topics">
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">01</span><span class="topic-name">Case 1 — PureFit</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>An end-to-end interview answer for “improve retention in a fitness app.” Define the product, walk the funnel, place the right metric at every step — the 5-step framework in action.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">02</span><span class="topic-name">Users Joined / WAU / MAU</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>Acquisition and activity metrics. Why raw sign-ups are usually vanity, and why Weekly/Monthly Active Users are the first credible signal of product-market fit.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">03</span><span class="topic-name">Retention Table / Nth-Day Retention</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>The cohort view: for users who joined in week X, what fraction returned on day N? Turns “retention is bad” into a precise, fixable drop-off point.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">04</span><span class="topic-name">Classes Attended / Duration</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>Engagement depth. A user who opens the app and one who finishes a 45-min class aren't the same — duration separates surface engagement from real value.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">05</span><span class="topic-name">Referrals &amp; Feedback</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>Downstream health signals. High referral rates signal a net-positive experience; feedback volume and sentiment show where friction lives.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">06</span><span class="topic-name">Match Rate (User ↔ Content)</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>A fitness-specific signal: do the videos and plans match user goals and levels? Low match rate predicts churn before users actually leave.</p></div>
+        </button>
+        <button class="topic" aria-expanded="false">
+          <div class="topic-head"><span class="topic-num">07</span><span class="topic-name">Case 2 — Indian Bank</span><span class="chev">+</span></div>
+          <div class="topic-body"><p>Measuring success for a newly launched bank app. Success splits into revenue-based (transactions, fees) and adoption-based (growth, utilization, satisfaction). Same framework, different domain.</p></div>
+        </button></div>
+    </section>
+
+    <section>
+      <p class="sec-label">Section 2</p>
+      <h2 class="sec-title">Real-World Use Cases</h2>
+      <div class="uses"><div class="uc"><div class="uc-dot"></div><div><strong>PureFit Funnel</strong><span>Naukri tracks application-completion rate as its core engagement metric — a user who searches but never applies is browsing, not engaging. Same logic as PureFit's class metric.</span></div></div><div class="uc"><div class="uc-dot"></div><div><strong>WAU / MAU</strong><span>WhatsApp defines “active” as sending one message in 30 days. The reported MAU is meaningful precisely because the threshold is hard to fake.</span></div></div><div class="uc"><div class="uc-dot"></div><div><strong>Nth-Day Retention</strong><span>Duolingo uses day-1, day-7, day-30 retention as core health metrics. A day-7 drop says the onboarding habit isn't sticking — a specific, fixable problem.</span></div></div><div class="uc"><div class="uc-dot"></div><div><strong>Classes / Duration</strong><span>Peloton weights “rides completed” over “rides started.” Completion signals value; abandonment at minute 3 is a product problem, not a motivation one.</span></div></div><div class="uc"><div class="uc-dot"></div><div><strong>Referral Rate</strong><span>Dropbox measured referred users' 30-day retention separately — they retained better, which justified doubling the referral incentive.</span></div></div><div class="uc"><div class="uc-dot"></div><div><strong>Bank App Revenue</strong><span>PhonePe tracks “transaction value routed through app,” not just downloads. App revenue metrics must tie to money moved, not user presence.</span></div></div></div>
+    </section>
+
+    <section>
+      <p class="sec-label">Section 3</p>
+      <h2 class="sec-title">Prerequisites to Refresh</h2>
+      <p class="sec-intro">Make sure these from Product Metrics — I are fresh — today applies that full framework to live interview cases.</p>
+      <div class="prereqs"><div class="pq"><div class="pq-t">North Star → Primary → Supporting</div><div class="pq-r">Today's cases build a metric pyramid per product. Know which level you're defining at any moment — North Star first, then what feeds it.</div></div><div class="pq"><div class="pq-t">5-Step Definition Framework</div><div class="pq-r">Describe → Goal → Journey → Map &amp; Quantify → Evaluate. Both PureFit and Indian Bank answers follow this spine.</div></div><div class="pq"><div class="pq-t">Vanity vs. Actionable</div><div class="pq-r">“Users joined” vs. “WAU” is the exact vanity-vs-actionable comparison from last lecture, now inside a live case.</div></div><div class="pq"><div class="pq-t">AAAERR stage mapping</div><div class="pq-r">The four funnel stages you'll walk today map onto AAAERR. Have that funnel in your head coming in.</div></div></div>
+    </section>
+
+    <section>
+      <p class="sec-label">Section 4</p>
+      <h2 class="sec-title">Before Class: Environment Setup</h2>
+      <p class="sec-intro">No dataset required — a case-discussion lecture.</p>
+      <div class="setup-card">
+        <label class="setup-item"><input type="checkbox"><span class="chk"></span><span class="setup-text">Re-read the 5-step metric-definition framework from Lecture 2 notes.</span></label><label class="setup-item"><input type="checkbox"><span class="chk"></span><span class="setup-text">Think through one fitness app (Cult.fit) and one fintech app (CRED, GPay): what metrics measure their success?</span></label><label class="setup-item"><input type="checkbox"><span class="chk"></span><span class="setup-text">Optional: sketch a funnel (acquisition → onboarding → engagement → retention) and place one metric per stage.</span></label>
+        <div class="progress"><div class="progress-bar" id="pbar"></div></div>
+        <div class="progress-txt" id="ptxt">0 of 3 done</div>
+      </div>
+    </section>
+
+    <footer>Scaler · Product Analytics Module · Lecture 3 Pre-Read</footer>
+  </div>
+
+<script>
+  // Make Your Move
+  var moves = Array.prototype.slice.call(document.querySelectorAll('.move'));
+  var reveal = document.getElementById('reveal');
+  var revealText = document.getElementById('reveal-text');
+  moves.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      moves.forEach(function(m){ m.classList.remove('chosen'); m.classList.add('dim'); });
+      btn.classList.add('chosen'); btn.classList.remove('dim');
+      revealText.textContent = btn.getAttribute('data-reveal');
+      reveal.classList.add('show');
+    });
+  });
+
+  // Locked clue
+  var cbtn = document.getElementById('clue-btn');
+  var cbody = document.getElementById('clue-body');
+  cbtn.addEventListener('click', function(){
+    var open = cbody.classList.toggle('open');
+    cbtn.querySelector('.lock').textContent = open ? '🔓' : '🔒';
+    cbtn.querySelector('span:nth-child(2)').textContent = open ? 'Clue Unlocked' : 'Clue Locked';
+    cbtn.querySelector('.hintr').textContent = open ? '' : 'tap to unlock →';
+  });
+
+  // Topics accordion
+  document.querySelectorAll('.topic').forEach(function(t){
+    t.addEventListener('click', function(){
+      var open = t.getAttribute('aria-expanded') === 'true';
+      t.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+  });
+
+  // Setup progress
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.setup-item input'));
+  var pbar = document.getElementById('pbar');
+  var ptxt = document.getElementById('ptxt');
+  function upd(){
+    var done = boxes.filter(function(b){return b.checked;}).length;
+    pbar.style.width = (done/boxes.length*100) + '%';
+    ptxt.textContent = done + ' of ' + boxes.length + ' done';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', upd); });
+</script>
+</body>
+</html>
